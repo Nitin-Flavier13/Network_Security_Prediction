@@ -3,7 +3,6 @@ from datetime import datetime
 
 from network_security.constant import training_pipeline
 
-
 class TrainingPipelineConfig:
     def __init__(self,timestamp=datetime.now()):
         timestamp = timestamp.strftime("%m_%d_%Y_%H_%M_%S")

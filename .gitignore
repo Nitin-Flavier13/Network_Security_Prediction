@@ -1,5 +1,6 @@
 venv/
 logs/
+Artifacts/
 
 # Ignore Python cache directories
 **/__pycache__/
