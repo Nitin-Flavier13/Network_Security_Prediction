@@ -34,9 +34,9 @@ class DataIngestion:
             collection = self.mongoClient[database_name][collection_name]
 
             df = pd.DataFrame(list(collection.find()))
-            if "_id" in df.columns.to_list():
-                df.drop(["_id"],axis=1,inplace=True)
-
+            if "id" and "_id" in df.columns.to_list():
+                df.drop(["id","_id"],axis=1,inplace=True)
+            
             df.replace({"na":np.nan},inplace=True)
 
             return df
