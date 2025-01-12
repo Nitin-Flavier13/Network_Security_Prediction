@@ -4,7 +4,8 @@ from network_security.logging.logger import logging
 from network_security.components.data_ingestion import DataIngestion
 from network_security.components.data_validation import DataValidation
 from network_security.exception.exception import NetworkSecurityException
-from network_security.entity.config_entity import TrainingPipelineConfig,DataIngestionConfig, DataValidationConfig
+from network_security.components.data_transformation import DataTransformation
+from network_security.entity.config_entity import TrainingPipelineConfig,DataIngestionConfig, DataValidationConfig, DataTransformationConfig
 
 if __name__ == "__main__":
     try:
@@ -21,9 +22,15 @@ if __name__ == "__main__":
 
         dataValConfig = DataValidationConfig(trainPipConfig)
         dataValidation = DataValidation(dataIngArtifact,dataValConfig)
-        dataValArtifacts = dataValidation.initiate_data_validation()
+        dataValArtifact = dataValidation.initiate_data_validation()
 
         logging.info("Data Validation Complete")
+
+        dataTransConfig = DataTransformationConfig(trainPipConfig)
+        dataTransformation = DataTransformation(dataValArtifact=dataValArtifact,dataTransConfig=dataTransConfig)
+        dataTransArtifact = dataTransformation.initiate_data_transformation()
+
+        print(dataTransArtifact)
 
 
     except Exception as e:

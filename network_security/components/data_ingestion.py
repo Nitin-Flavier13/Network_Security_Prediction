@@ -15,6 +15,8 @@ from network_security.entity.config_entity import DataIngestionConfig
 from network_security.exception.exception import NetworkSecurityException
 from network_security.entity.artifact_entity import DataIngestionArtifact
 
+from network_security.constant.training_pipeline import columns_to_be_del
+
 load_dotenv()
 MONGO_DB_URI = os.getenv("MONGO_DB_URI")
 
@@ -34,8 +36,10 @@ class DataIngestion:
             collection = self.mongoClient[database_name][collection_name]
 
             df = pd.DataFrame(list(collection.find()))
-            if "id" and "_id" in df.columns.to_list():
-                df.drop(["id","_id"],axis=1,inplace=True)
+            
+            for ele in columns_to_be_del:
+                if ele in df.columns.to_list():
+                    df.drop([ele],axis=1,inplace=True)
             
             df.replace({"na":np.nan},inplace=True)
 

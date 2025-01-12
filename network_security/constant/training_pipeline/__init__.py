@@ -4,6 +4,8 @@ import sys
 import numpy as np
 import pandas as pd
 
+columns_to_be_del = ["id","_id","index"]
+
 # defining common constant variables for training pipeline
 TARGET_COLUMN: str = "Result"
 PIPELINE_NAME: str = "NetworkTrainPipeline"
@@ -15,7 +17,7 @@ TRAIN_FILE_NAME: str = "train.csv"
 
 ### Data Ingestion realted constant
 DATA_INGESTION_DATABASE_NAME: str = "NetworkDB"
-DATA_INGESTION_COLLECTION_NAME: str = "PhishingData"
+DATA_INGESTION_COLLECTION_NAME: str = "PhishingWebData"
 
 DATA_INGESTION_INGESTED_DIR: str = "ingested"
 DATA_INGESTION_DIR_NAME: str = "data_ingestion"
@@ -32,4 +34,21 @@ DATA_VALIDATION_VALID_DIR: str = "valid"
 DATA_VALIDATION_INVALID_DIR: str = "invalid"
 DATA_VALIDATION_DRIFT_REPORT_DIR: str = "drift_report"
 DATA_VALIDATION_DRIFT_REPORT_FILE_NAME: str = "report.yaml"
+
+### Data Transformation related constants
+
+DATA_TRANSFORMATION_DIR: str = "data_tranformation"
+DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR: str = "tranformed"
+DATA_TRANSFORMATION_TRANSFORMED_OBJECT_DIR: str = "tranformed_object"
+
+PREPROCESSING_OBJECT_FILE_NAME:str = "preprocessing.pkl"
+
+# knn imputer to replace nan values, it will find the 3 nearest neighbors and find the average values
+DATA_TRANSFORMATION_IMPUTER_PARAMS: dict = {
+    "missing_values": np.nan,
+    "n_neighbors": 3,
+    "weights": "uniform"
+}
+
+
 
