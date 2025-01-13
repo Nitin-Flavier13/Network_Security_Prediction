@@ -1,36 +1,33 @@
 import sys
 
 from network_security.logging.logger import logging
+from network_security.components.model_trainer import ModelTrainer
 from network_security.components.data_ingestion import DataIngestion
 from network_security.components.data_validation import DataValidation
 from network_security.exception.exception import NetworkSecurityException
 from network_security.components.data_transformation import DataTransformation
-from network_security.entity.config_entity import TrainingPipelineConfig,DataIngestionConfig, DataValidationConfig, DataTransformationConfig
+from network_security.entity.config_entity import TrainingPipelineConfig,DataIngestionConfig, DataValidationConfig 
+from network_security.entity.config_entity import DataTransformationConfig, ModelTrainerConfig
 
 if __name__ == "__main__":
     try:
-        logging.info("Called the Data Ingestion Pipeline")
-
+        
         trainPipConfig = TrainingPipelineConfig()
         dataIngConfig = DataIngestionConfig(trainPipConfig)
         dataIngestion = DataIngestion(dataIngConfig)
         dataIngArtifact = dataIngestion.initiate_data_ingestion()
-
-        logging.info("Data Ingestion Pipeline Successfully executed")
-
-        logging.info("Data Validation initiated")
-
+        
         dataValConfig = DataValidationConfig(trainPipConfig)
         dataValidation = DataValidation(dataIngArtifact,dataValConfig)
         dataValArtifact = dataValidation.initiate_data_validation()
-
-        logging.info("Data Validation Complete")
 
         dataTransConfig = DataTransformationConfig(trainPipConfig)
         dataTransformation = DataTransformation(dataValArtifact=dataValArtifact,dataTransConfig=dataTransConfig)
         dataTransArtifact = dataTransformation.initiate_data_transformation()
 
-        print(dataTransArtifact)
+        modelTrainerConfig = ModelTrainerConfig(trainPipConfig)
+        modelTrain = ModelTrainer(dataTransArtifact=dataTransArtifact,modelTrainerConfig=modelTrainerConfig)
+        modelTrainerArtifact = modelTrain.initiate_model_trainer()
 
 
     except Exception as e:
