@@ -1,5 +1,6 @@
 venv/
 logs/
+mlruns/
 Artifacts/
 
 # Ignore Python cache directories

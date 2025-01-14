@@ -1,4 +1,5 @@
 import yaml
+import mlflow
 import pickle
 import os,sys 
 
@@ -71,19 +72,30 @@ def evaluate_models(x_train,y_train,x_test,y_test,models,params):
         for model_name, model in models.items():
             param = params.get(model_name,{})
 
-            gs = GridSearchCV(estimator=model,param_grid=param,cv=3)
-            gs.fit(x_train,y_train)
+            with mlflow.start_run(run_name=f"{model_name}_hyperparam_tuning", nested=True):
+                gs = GridSearchCV(estimator=model,param_grid=param,cv=3)
+                gs.fit(x_train,y_train)
 
-            model.set_params(**gs.best_params_)
-            model.fit(x_train,y_train)
+                # Log the best params
+                mlflow.log_params(gs.best_params_)
 
-            y_test_pred = model.predict(x_test)
-            y_train_pred = model.predict(x_train)
+                model.set_params(**gs.best_params_)
+                model.fit(x_train,y_train)
 
-            train_model_score = accuracy_score(y_train,y_train_pred)
-            test_model_score = accuracy_score(y_test,y_test_pred)
+                y_test_pred = model.predict(x_test)
+                y_train_pred = model.predict(x_train)
 
-            report[model_name] = [model,test_model_score]
+                train_model_score = accuracy_score(y_train,y_train_pred)
+                test_model_score = accuracy_score(y_test,y_test_pred)
+
+                # Log the accuracy scores
+                mlflow.log_metric("train_accuracy", train_model_score)
+                mlflow.log_metric("test_accuracy", test_model_score)
+
+                # Log the model
+                mlflow.sklearn.log_model(model, f"{model_name}_model")
+
+                report[model_name] = [model,test_model_score]
 
         return report
     except Exception as e:

@@ -1,5 +1,7 @@
 import os 
 import sys 
+import mlflow
+import dagshub
 
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -9,12 +11,15 @@ from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier, Ran
 from network_security.logging.logger import logging
 from network_security.entity.config_entity import ModelTrainerConfig
 from network_security.exception.exception import NetworkSecurityException
-from network_security.entity.artifact_entity import ModelTrainerArtifact, DataTransformationArtifact
+from network_security.constant.training_pipeline import FINAL_MODEL_PATH, FINAL_PREPROCESSOR_PATH, FINAL_MODEL_DIR
+from network_security.entity.artifact_entity import ModelTrainerArtifact, DataTransformationArtifact, ClassificationMetricArtifact
 
 from network_security.utils.ml_utils.model.estimator import NetworkModel
 from network_security.utils.ml_utils.metric.classification_metric import get_classification_score
 from network_security.utils.main_utils.utils import save_obj, load_obj, load_numpy_array_data, evaluate_models
 
+
+dagshub.init(repo_owner='nitinflavier13', repo_name='Network_Security_Prediction', mlflow=True)
 class ModelTrainer:
     def __init__(self, dataTransArtifact: DataTransformationArtifact, modelTrainerConfig: ModelTrainerConfig):
         try:    
@@ -22,6 +27,22 @@ class ModelTrainer:
             self.modelTrainerConfig = modelTrainerConfig
         except Exception as e:
             raise NetworkSecurityException(e,sys)
+    
+    def track_mlflow(self,best_model_name,best_model,classificationMetric: ClassificationMetricArtifact) -> None:
+        try:
+            with mlflow.start_run(run_name=f"{best_model_name}_best_model"):
+                f1_score = classificationMetric.f1_score
+                recall_score = classificationMetric.recall_score
+                precision_score = classificationMetric.precision_score
+
+                mlflow.log_metric("f1_score",f1_score)
+                mlflow.log_metric("recall_score",recall_score)
+                mlflow.log_metric("precision_score",precision_score)
+
+                mlflow.sklearn.log_model(best_model,"model")
+
+        except Exception as e:
+            NetworkSecurityException(e,sys)
     
     def train_model(self,x_train, y_train, x_test, y_test) -> ModelTrainerArtifact:
         try:    
@@ -76,7 +97,8 @@ class ModelTrainer:
             classification_test_metric = get_classification_score(y_true=y_test,y_pred=y_pred_test)
 
             # track the mlflow
-
+            self.track_mlflow(best_model_name,best_model,classification_train_metric)
+            self.track_mlflow(best_model_name,best_model,classification_test_metric)
 
             preprocessor = load_obj(file_path=self.dataTransArtifact.transformed_object_file_path)
 
@@ -93,6 +115,12 @@ class ModelTrainer:
                 train_metric_artifact=classification_train_metric,
                 test_metric_artifact=classification_test_metric
             )
+
+            os.makedirs(FINAL_MODEL_DIR,exist_ok=True)
+            logging.info("Saving Model and preprocessing file")
+            save_obj(FINAL_MODEL_PATH,best_model)
+            save_obj(FINAL_PREPROCESSOR_PATH,preprocessor)
+
             return modelTrainerArtifact
 
         except Exception as e:

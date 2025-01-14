@@ -60,5 +60,11 @@ MODEL_FILE_NAME: str = "model.pkl"
 MODEL_TRAINER_EXPECTED_SCORE: float = 0.6
 MODEL_TRAINER_OVERFITING_UNDERFITING_THRESHOLD: float = 0.05
 
+# Final model and preprocessing file path
+
+FINAL_MODEL_DIR = "final_artifacts"
+FINAL_MODEL_PATH = "final_artifacts/model.pkl"
+FINAL_PREPROCESSOR_PATH = "final_artifacts/preprocessing.pkl"
+
 
 
