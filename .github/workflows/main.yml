@@ -81,10 +81,20 @@ jobs:
         run: |
           docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{secrets.ECR_REPOSITORY_NAME }}:latest 
       
-      - name: Stop and remove  container if running
-        run: |
-          docker ps -q --filter "name=phishingdata" | grep -q . && docker stop phishingdata && docker rm -fv phishingdata
+      # - name: Stop and remove  container if running
+      #   run: |
+      #     docker ps -q --filter "name=phishingdata" | grep -q . && docker stop phishingdata && docker rm -fv phishingdata
       
+      - name: Stop and remove container if running
+          run: |
+            CONTAINER_ID=$(docker ps -q --filter "ancestor=${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest")
+            if [ -n "$CONTAINER_ID" ]; then
+              docker stop $CONTAINER_ID
+              docker rm -fv $CONTAINER_ID
+            else
+              echo "No container found running with the specified image."
+            fi
+
       - name: Run Docker Image to serve users
         run: |
           docker run -d -p 8080:8080 --ipc="host" --name=phishingdata -e 'AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}' -e 'AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}' -e 'AWS_REGION=${{secrets.AWS_REGION}}' ${{secrets.AWS_ECR_LOGIN_URI}}/${{secrets.ECR_REPOSITORY_NAME}}:latest
