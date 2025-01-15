@@ -83,7 +83,7 @@ jobs:
       
       - name: Stop and remove  container if running
         run: |
-          docker ps -q --filter "name=phishingdata" | grep -q . && docker stop networksecurity && docker rm -fv networksecurity
+          docker ps -q --filter "name=phishingdata" | grep -q . && docker stop phishingdata && docker rm -fv phishingdata
       
       - name: Run Docker Image to serve users
         run: |
