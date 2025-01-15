@@ -71,4 +71,4 @@ OUTPUT_PREDICTION_DIR = "validate_model/prediction_data"
 PREDICTION_OUTPUT_PATH = "validate_model/prediction_data/prediction.csv"
 
 
-
+TRAINING_BUCKET_NAME = "phishing-data-prediction"
