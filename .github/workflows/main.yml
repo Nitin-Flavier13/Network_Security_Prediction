@@ -83,8 +83,8 @@ jobs:
       
       # - name: Stop and remove  container if running
       #   run: |
-      #     docker ps -q --filter "name=phishingdata" | grep -q . && docker stop phishingdata && docker rm -fv phishingdata
-      
+      #     docker ps -q --filter "name=phishing" | grep -q . && docker stop phishingdata && docker rm -fv phishingdata
+
       - name: Stop and remove container if running
           run: |
             CONTAINER_ID=$(docker ps -q --filter "ancestor=${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest")
