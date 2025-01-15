@@ -48,7 +48,7 @@ def save_obj(file_path: str,obj: object) -> None:
     except Exception as e:
         raise NetworkSecurityException(e,sys)
 
-def load_obj(file_path: str) -> None:
+def load_obj(file_path: str):
     try:
         if not os.path.exists(file_path):
             raise NetworkSecurityException(f"The file path does not exists {file_path}",sys)

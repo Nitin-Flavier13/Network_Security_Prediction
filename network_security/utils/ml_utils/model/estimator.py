@@ -13,9 +13,9 @@ class NetworkModel:
         except Exception as e:
             raise NetworkSecurityException(e,sys)
     
-    def predict(self,x) -> np.ndarray:
+    def predict(self,x):
         try:
-            x_trans = self.preprocessor(x)
+            x_trans = self.preprocessor.transform(x)
             y_hat = self.model.predict(x_trans)
             return y_hat
         except Exception as e:

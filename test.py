@@ -9,6 +9,10 @@ from network_security.components.data_transformation import DataTransformation
 from network_security.entity.config_entity import TrainingPipelineConfig,DataIngestionConfig, DataValidationConfig 
 from network_security.entity.config_entity import DataTransformationConfig, ModelTrainerConfig
 
+# import pandas as pd
+# from network_security.utils.ml_utils.model.estimator import NetworkModel
+# from network_security.utils.main_utils.utils import load_obj
+# from network_security.constant.training_pipeline import FINAL_MODEL_PATH, FINAL_PREPROCESSOR_PATH
 if __name__ == "__main__":
     try:
         
@@ -28,7 +32,6 @@ if __name__ == "__main__":
         modelTrainerConfig = ModelTrainerConfig(trainPipConfig)
         modelTrain = ModelTrainer(dataTransArtifact=dataTransArtifact,modelTrainerConfig=modelTrainerConfig)
         modelTrainerArtifact = modelTrain.initiate_model_trainer()
-
 
     except Exception as e:
         raise NetworkSecurityException(e,sys)

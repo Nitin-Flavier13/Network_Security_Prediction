@@ -67,4 +67,8 @@ FINAL_MODEL_PATH = "final_artifacts/model.pkl"
 FINAL_PREPROCESSOR_PATH = "final_artifacts/preprocessing.pkl"
 
 
+OUTPUT_PREDICTION_DIR = "validate_model/prediction_data"
+PREDICTION_OUTPUT_PATH = "validate_model/prediction_data/prediction.csv"
+
+
 
