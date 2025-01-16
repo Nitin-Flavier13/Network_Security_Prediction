@@ -87,12 +87,12 @@ jobs:
 
       - name: Stop and remove container if running
         run: |
-          CONTAINER_ID=$(docker ps -q --filter "ancestor=${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest")
+          CONTAINER_ID=$(docker ps -aq --filter "name=phishingdata")
           if [ -n "$CONTAINER_ID" ]; then
             docker stop $CONTAINER_ID
             docker rm -fv $CONTAINER_ID
           else
-            echo "No container found running with the specified image."
+            echo "No container found with the name 'phishingdata'."
           fi
 
       - name: Run Docker Image to serve users
@@ -102,3 +102,8 @@ jobs:
       - name: Clean previous images and containers
         run: |
           docker system prune -f
+
+
+
+
+# ubuntu@ip-172-31-22-203:~/actions-runner$ ./config.sh --url https://github.com/Nitin-Flavier13/Network_Security_Prediction --token AU4BESTGN746XSIWG2ZF6H3HRAMVK
