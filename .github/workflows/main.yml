@@ -92,7 +92,7 @@ jobs:
             docker stop $CONTAINER_ID
             docker rm -fv $CONTAINER_ID
           else
-            echo "No container found with the name 'phishingdata'."
+            echo "No container found with 'phishingdata'."
           fi
 
       - name: Run Docker Image to serve users
